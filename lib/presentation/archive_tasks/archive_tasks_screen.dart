@@ -12,6 +12,8 @@ class ArchiveTasks extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeState>(
       listener: (context, state) {},
       builder: (context, state) {
+        // TODO (max)::  do not expose bloc items like this
+        //uss state instead
         HomeCubit cubit = HomeCubit.get(context);
         return TasksListViewBuilder(
           cubit: cubit,

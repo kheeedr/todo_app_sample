@@ -3,6 +3,7 @@ part of 'home_cubit.dart';
 @immutable
 abstract class HomeState {}
 
+// TODO (max)::  the bloc must handle single state changes ONLY ONE
 class HomeInitial extends HomeState {}
 
 class BottomNavNewTask extends HomeState {}

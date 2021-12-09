@@ -1,3 +1,5 @@
+// TODO (max):: immutable
+// TODO (max):: equtable
 class Task {
   int? id;
   String title;

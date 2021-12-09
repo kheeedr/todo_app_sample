@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do/business_logic/cubit/home_cubit.dart';
 import 'package:to_do/data/model/task_model.dart';
 
+// TODO (max):: immutable
 class TasksListViewBuilder extends StatelessWidget {
   HomeCubit cubit;
   List<Task> tasks;

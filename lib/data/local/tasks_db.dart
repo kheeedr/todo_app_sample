@@ -8,6 +8,7 @@ class TasksDB {
       'todo.db',
       version: 1,
       onCreate: (database, version) {
+        // TODO (max):: dont use then if you can use async await
         database
             .execute(
                 'CREATE TABLE $tasksTableName (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, date TEXT, time TEXT, status TEXT)')
@@ -54,7 +55,7 @@ class TasksDB {
               where: 'id = ?',
               whereArgs: [id],
             ))
-        .catchError(
-            (error) => print('error when delete item from db ${error.toString()}'));
+        .catchError((error) =>
+            print('error when delete item from db ${error.toString()}'));
   }
 }

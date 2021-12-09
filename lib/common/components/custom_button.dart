@@ -3,7 +3,9 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// TODO (max):: immutable
 class CustomButton extends StatelessWidget {
+  // TODO (max)::  do noy late if they have a difualt value
   late double width;
   late double height;
   late double borderRadius;
