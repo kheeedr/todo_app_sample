@@ -11,7 +11,7 @@ class ArchivedTasksCubit extends Cubit<ArchivedTasksState> {
 
   static ArchivedTasksCubit get(context) => BlocProvider.of(context);
 
-  ArchivedTasksCubit(this.tasksRepository) : super(ArchivedTasksInitial());
+  ArchivedTasksCubit(this.tasksRepository) : super(ArchivedTasksLoading());
 
   Future updateTask(Task task) async {
     return await tasksRepository

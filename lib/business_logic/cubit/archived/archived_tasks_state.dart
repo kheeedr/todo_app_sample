@@ -3,8 +3,6 @@ part of 'archived_tasks_cubit.dart';
 @immutable
 abstract class ArchivedTasksState {}
 
-class ArchivedTasksInitial extends ArchivedTasksState {}
-
 class ArchivedTasksLoading extends ArchivedTasksState {}
 
 class GetArchivedTasksSuccessfully extends ArchivedTasksState {

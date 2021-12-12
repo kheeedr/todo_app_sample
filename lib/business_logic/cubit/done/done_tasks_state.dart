@@ -3,8 +3,6 @@ part of 'done_tasks_cubit.dart';
 @immutable
 abstract class DoneTasksState {}
 
-class DoneTasksInitial extends DoneTasksState {}
-
 class DoneTasksLoading extends DoneTasksState {}
 
 class GetDoneTasksSuccessfully extends DoneTasksState {

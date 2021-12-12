@@ -25,30 +25,32 @@ class ArchivedTasks extends StatelessWidget {
         },
         builder: (context, state) {
           ArchivedTasksCubit cubit = ArchivedTasksCubit.get(context);
-          return (archivedTasks.isNotEmpty)
-              ? ListView.separated(
-                  itemBuilder: (context, index) {
-                    Task task = archivedTasks[index];
-                    return CustomTasksListItem(
-                      task: task,
-                      onDoneIconPressed: () {
-                        cubit.updateTask(Task(
-                            id: task.id,
-                            title: task.title,
-                            date: task.date,
-                            time: task.time,
-                            status: 'done'));
+          return (state is ArchivedTasksLoading)
+              ? Center(child: CircularProgressIndicator())
+              : (archivedTasks.isNotEmpty)
+                  ? ListView.separated(
+                      itemBuilder: (context, index) {
+                        Task task = archivedTasks[index];
+                        return CustomTasksListItem(
+                          task: task,
+                          onDoneIconPressed: () {
+                            cubit.updateTask(Task(
+                                id: task.id,
+                                title: task.title,
+                                date: task.date,
+                                time: task.time,
+                                status: 'done'));
+                          },
+                          onArchivedIconPressed: () {},
+                          onDismissed: (direction) {
+                            cubit.deleteTask(task.id!);
+                          },
+                        );
                       },
-                      onArchivedIconPressed: () {},
-                      onDismissed: (direction) {
-                        cubit.deleteTask(task.id!);
-                      },
-                    );
-                  },
-                  separatorBuilder: (_, __) => CustomListViewSeparator(),
-                  itemCount: archivedTasks.length,
-                )
-              : NoTasksPage();
+                      separatorBuilder: (_, __) => CustomListViewSeparator(),
+                      itemCount: archivedTasks.length,
+                    )
+                  : NoTasksPage();
         },
       ),
     );

@@ -9,7 +9,7 @@ part 'new_tasks_state.dart';
 class NewTasksCubit extends Cubit<NewTasksState> {
   final TasksRepository tasksRepository;
 
-  NewTasksCubit(this.tasksRepository) : super(NewTasksInitial());
+  NewTasksCubit(this.tasksRepository) : super(NewTasksLoading());
 
   static NewTasksCubit get(context) => BlocProvider.of(context);
 

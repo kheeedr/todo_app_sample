@@ -9,7 +9,7 @@ part 'done_tasks_state.dart';
 class DoneTasksCubit extends Cubit<DoneTasksState> {
   final TasksRepository tasksRepository;
 
-  DoneTasksCubit(this.tasksRepository) : super(DoneTasksInitial());
+  DoneTasksCubit(this.tasksRepository) : super(DoneTasksLoading());
 
   static DoneTasksCubit get(context) => BlocProvider.of(context);
 

@@ -25,30 +25,32 @@ class DoneTasks extends StatelessWidget {
         },
         builder: (context, state) {
           DoneTasksCubit cubit = DoneTasksCubit.get(context);
-          return (doneTasks.isNotEmpty)
-              ? ListView.separated(
-                  itemBuilder: (context, index) {
-                    Task task = doneTasks[index];
-                    return CustomTasksListItem(
-                      task: task,
-                      onDoneIconPressed: () {},
-                      onArchivedIconPressed: () {
-                        cubit.updateTask(Task(
-                            id: task.id,
-                            title: task.title,
-                            date: task.date,
-                            time: task.time,
-                            status: 'archived'));
+          return (state is DoneTasksLoading)
+              ? Center(child: CircularProgressIndicator())
+              : (doneTasks.isNotEmpty)
+                  ? ListView.separated(
+                      itemBuilder: (context, index) {
+                        Task task = doneTasks[index];
+                        return CustomTasksListItem(
+                          task: task,
+                          onDoneIconPressed: () {},
+                          onArchivedIconPressed: () {
+                            cubit.updateTask(Task(
+                                id: task.id,
+                                title: task.title,
+                                date: task.date,
+                                time: task.time,
+                                status: 'archived'));
+                          },
+                          onDismissed: (direction) {
+                            cubit.deleteTask(task.id!);
+                          },
+                        );
                       },
-                      onDismissed: (direction) {
-                        cubit.deleteTask(task.id!);
-                      },
-                    );
-                  },
-                  separatorBuilder: (_, __) => CustomListViewSeparator(),
-                  itemCount: doneTasks.length,
-                )
-              : NoTasksPage();
+                      separatorBuilder: (_, __) => CustomListViewSeparator(),
+                      itemCount: doneTasks.length,
+                    )
+                  : NoTasksPage();
         },
       ),
     );

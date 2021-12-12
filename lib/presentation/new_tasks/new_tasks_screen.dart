@@ -19,37 +19,39 @@ class NewTasks extends StatelessWidget {
       },
       builder: (context, state) {
         NewTasksCubit cubit = NewTasksCubit.get(context)..getNewTasksFromDB();
-        return (newTasks.isNotEmpty)
-            ? ListView.separated(
-                itemBuilder: (context, index) {
-                  Task task = newTasks[index];
-                  return CustomTasksListItem(
-                    task: task,
-                    onDoneIconPressed: () {
-                      cubit.updateTask(Task(
-                          id: task.id,
-                          title: task.title,
-                          date: task.date,
-                          time: task.time,
-                          status: 'done'));
+        return (state is NewTasksLoading)
+            ? Center(child: CircularProgressIndicator())
+            : (newTasks.isNotEmpty)
+                ? ListView.separated(
+                    itemBuilder: (context, index) {
+                      Task task = newTasks[index];
+                      return CustomTasksListItem(
+                        task: task,
+                        onDoneIconPressed: () {
+                          cubit.updateTask(Task(
+                              id: task.id,
+                              title: task.title,
+                              date: task.date,
+                              time: task.time,
+                              status: 'done'));
+                        },
+                        onArchivedIconPressed: () {
+                          cubit.updateTask(Task(
+                              id: task.id,
+                              title: task.title,
+                              date: task.date,
+                              time: task.time,
+                              status: 'archived'));
+                        },
+                        onDismissed: (direction) {
+                          cubit.deleteTask(task.id!);
+                        },
+                      );
                     },
-                    onArchivedIconPressed: () {
-                      cubit.updateTask(Task(
-                          id: task.id,
-                          title: task.title,
-                          date: task.date,
-                          time: task.time,
-                          status: 'archived'));
-                    },
-                    onDismissed: (direction) {
-                      cubit.deleteTask(task.id!);
-                    },
-                  );
-                },
-                separatorBuilder: (_, __) => CustomListViewSeparator(),
-                itemCount: newTasks.length,
-              )
-            : NoTasksPage();
+                    separatorBuilder: (_, __) => CustomListViewSeparator(),
+                    itemCount: newTasks.length,
+                  )
+                : NoTasksPage();
       },
     );
   }

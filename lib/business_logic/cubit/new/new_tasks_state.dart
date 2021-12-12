@@ -3,8 +3,6 @@ part of 'new_tasks_cubit.dart';
 @immutable
 abstract class NewTasksState {}
 
-class NewTasksInitial extends NewTasksState {}
-
 class NewTasksLoading extends NewTasksState {}
 
 class GetNewTasksSuccessfully extends NewTasksState {
@@ -16,7 +14,6 @@ class GetNewTasksSuccessfully extends NewTasksState {
 }
 
 class NewTasksError extends NewTasksState {
-
   final String _errorMessage;
 
   String get errorMessage => _errorMessage;
