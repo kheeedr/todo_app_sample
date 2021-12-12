@@ -1,11 +1,10 @@
-// TODO (max):: immutable
-// TODO (max):: equtable
+// TODO (max):: equitable
 class Task {
-  int? id;
-  String title;
-  String date;
-  String time;
-  String status;
+  final int? id;
+  final String title;
+  final String date;
+  final String time;
+  final String status;
 
   Task({
     this.id,

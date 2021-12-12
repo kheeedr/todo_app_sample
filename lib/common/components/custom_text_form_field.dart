@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 // TODO (max)::  immutability
 
 class CustomTextFormField extends StatelessWidget {
-  double borderRadius;
-  String label;
-  Widget? prefixIcon;
-  Widget? suffixIcon;
+  final double borderRadius;
+  final String label;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final FormFieldValidator<String> validator;
-  TextInputType inputType;
-  bool isPassword;
-  VoidCallback? onTap;
-  TextEditingController? controller;
-  bool readOnly;
+  final TextInputType inputType;
+  final bool isPassword;
+  final VoidCallback? onTap;
+  final TextEditingController? controller;
+  final bool readOnly;
 
   CustomTextFormField({
     this.controller,

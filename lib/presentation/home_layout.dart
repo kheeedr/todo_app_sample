@@ -4,100 +4,112 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do/business_logic/cubit/home_cubit.dart';
+import 'package:to_do/business_logic/cubit/new/new_tasks_cubit.dart';
 import 'package:to_do/common/components/custom_text_form_field.dart';
-import 'package:to_do/data/local/tasks_db.dart';
 import 'package:to_do/data/model/task_model.dart';
-import 'package:to_do/data/repo/tasks_repository.dart';
+
+import 'new_tasks/new_tasks_screen.dart';
 
 class HomeLayout extends StatelessWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var formKey = GlobalKey<FormState>();
+
   TextEditingController titleController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeController = TextEditingController();
 
+  bool isBottomSheetOpened = false;
+
+  int navIndex = 0;
+  String tittle = 'New Tasks';
+  Widget screen = NewTasks();
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          HomeCubit(TasksRepository(TasksDB()))..getTasksFromDB(),
-      child: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          HomeCubit cubit = HomeCubit.get(context);
-          return Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(
-              title: Text(
-                cubit.titles[cubit.navIndex],
-              ),
-            ),
-            body: cubit.screens[cubit.navIndex],
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (cubit.isBottomSheetOpened) {
-                  if (formKey.currentState!.validate()) {
-                    Task newTask = Task(
-                        title: titleController.text,
-                        time: timeController.text,
-                        date: dateController.text);
+    return BlocConsumer<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state is BottomSheetStateChanged) {
+          isBottomSheetOpened = state.isBottomSheetOpened;
+        } else if (state is BottomNavStateChanged) {
+          navIndex = state.navIndex;
+          tittle = state.tittle;
+          screen = state.screen;
+        }
+      },
+      builder: (context, state) {
+        HomeCubit cubit = HomeCubit.get(context);
+        return Scaffold(
+          key: scaffoldKey,
+          appBar: AppBar(
+            title: Text(tittle),
+          ),
+          body: screen,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              if (isBottomSheetOpened) {
+                if (formKey.currentState!.validate()) {
+                  Task newTask = Task(
+                      title: titleController.text,
+                      time: timeController.text,
+                      date: dateController.text);
 
-                    cubit.insertToTasksTable(newTask).then((_) {
-                      Navigator.pop(context);
-                      cubit.bottomSheetClosed();
-                    }).catchError((error) => print(error.toString()));
-                  }
-                } else {
-                  cubit.bottomSheetOpened();
-                  scaffoldKey.currentState!
-                      .showBottomSheet(
-                        (context) => bottomSheet(context),
-                        elevation: 20,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20.0),
-                            topRight: Radius.circular(20.0),
-                          ),
-                        ),
-                        backgroundColor: Colors.white,
-                      )
-                      .closed
-                      .then((value) {
-                    cubit.bottomSheetClosed();
-                    dateController.clear();
-                    timeController.text = '';
-                    titleController.text = '';
+                  NewTasksCubit.get(context)
+                      .insertToTasksTable(newTask)
+                      .then((_) {
+                    Navigator.pop(context);
+                    cubit.isBottomSheetOpened(false);
                   });
                 }
-              },
-              child: cubit.isBottomSheetOpened
-                  ? Icon(Icons.save, color: Colors.white)
-                  : Icon(Icons.edit, color: Colors.white),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              onTap: (index) {
-                cubit.navIndex = index;
-              },
-              currentIndex: cubit.navIndex,
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(
-                  label: 'Tasks',
-                  icon: Icon(Icons.menu),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Done',
-                  icon: Icon(Icons.check_circle_outline),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Archived',
-                  icon: Icon(Icons.archive_outlined),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              } else {
+                cubit.isBottomSheetOpened(true);
+                scaffoldKey.currentState!
+                    .showBottomSheet(
+                      (context) => bottomSheet(context),
+                      elevation: 20,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0),
+                        ),
+                      ),
+                      backgroundColor: Colors.white,
+                    )
+                    .closed
+                    .then((value) {
+                  cubit.isBottomSheetOpened(false);
+                  dateController.clear();
+                  timeController.clear();
+                  titleController.clear();
+                });
+              }
+            },
+            child: isBottomSheetOpened
+                ? Icon(Icons.save, color: Colors.white)
+                : Icon(Icons.edit, color: Colors.white),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: (index) {
+              cubit.bottomNavStateChanged(index);
+            },
+            currentIndex: navIndex,
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                label: 'Tasks',
+                icon: Icon(Icons.menu),
+              ),
+              BottomNavigationBarItem(
+                label: 'Done',
+                icon: Icon(Icons.check_circle_outline),
+              ),
+              BottomNavigationBarItem(
+                label: 'Archived',
+                icon: Icon(Icons.archive_outlined),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

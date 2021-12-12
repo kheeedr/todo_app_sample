@@ -1,18 +1,14 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// TODO (max):: immutable
 class CustomButton extends StatelessWidget {
-  // TODO (max)::  do noy late if they have a difualt value
-  late double width;
-  late double height;
-  late double borderRadius;
-  late double fontSize;
-  late Color buttonColor;
-  late VoidCallback onPressed;
-  late String text;
+  final double width;
+  final double height;
+  final double borderRadius;
+  final double fontSize;
+  final Color buttonColor;
+  final VoidCallback onPressed;
+  final String text;
 
   CustomButton({
     this.width = double.infinity,

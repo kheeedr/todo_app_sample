@@ -11,7 +11,11 @@ class TasksRepository {
   }
 
   Future<List<Task>> getTasks() async {
-    return Task.mapToTasks(await tasksDB.getTasksFromDB());
+    return Task.mapToTasks(await tasksDB.getAllTasksFromDB());
+  }
+
+  Future<List<Task>> getTasksFromDatabaseByStatus(String status) async {
+    return Task.mapToTasks(await tasksDB.getTasksFromDatabaseByStatus(status));
   }
 
   Future updateTask(Task task) async {

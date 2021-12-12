@@ -6,28 +6,28 @@ abstract class HomeState {}
 // TODO (max)::  the bloc must handle single state changes ONLY ONE
 class HomeInitial extends HomeState {}
 
-class BottomNavNewTask extends HomeState {}
+class BottomNavStateChanged extends HomeState {
+  late final int _navIndex;
+  late String _tittle;
+  late Widget _screen;
 
-class BottomNavDoneTask extends HomeState {}
+  int get navIndex => _navIndex;
+  String get tittle => _tittle;
+  Widget get screen => _screen;
 
-class BottomNavArchivedTask extends HomeState {}
+  BottomNavStateChanged(this._navIndex) {
+    _tittle = _titles[_navIndex];
+    _screen = _screens[_navIndex];
+  }
 
-class BottomSheetOpened extends HomeState {}
+  final List<Widget> _screens = [NewTasks(), DoneTasks(), ArchivedTasks()];
+  final List<String> _titles = ['New Tasks', 'Done Tasks', 'Archived Tasks'];
+}
 
-class BottomSheetClosed extends HomeState {}
+class BottomSheetStateChanged extends HomeState {
+  final bool _isBottomSheetOpened;
 
-class TaskSavedSuccessfully extends HomeState {}
+  bool get isBottomSheetOpened => _isBottomSheetOpened;
 
-class ErrorOnSaveTask extends HomeState {}
-
-class ErrorOnGetTasks extends HomeState {}
-
-class DataRetrievedFromDB extends HomeState {}
-
-class TaskUpdatedSuccessfully extends HomeState {}
-
-class ErrorOnUpdateTask extends HomeState {}
-
-class TaskDeletedSuccessfully extends HomeState {}
-
-class ErrorOnDeleteTask extends HomeState {}
+  BottomSheetStateChanged(this._isBottomSheetOpened);
+}

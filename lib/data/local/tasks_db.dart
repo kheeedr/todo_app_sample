@@ -5,15 +5,18 @@ import 'package:to_do/data/model/task_model.dart';
 class TasksDB {
   Future<Database> openDB() async {
     return await openDatabase(
-      'todo.db',
+      databaseFileName,
       version: 1,
-      onCreate: (database, version) {
-        // TODO (max):: dont use then if you can use async await
-        database
-            .execute(
-                'CREATE TABLE $tasksTableName (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, date TEXT, time TEXT, status TEXT)')
-            .then((value) => print('table created'))
-            .catchError((error) => print('error on creating DB $error'));
+      onCreate: (database, version) async {
+        try {
+          await database.execute('''CREATE TABLE $tasksTableName
+               (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                title TEXT, date TEXT, time TEXT, status TEXT)
+                ''');
+          print('table created');
+        } catch (e) {
+          print('error on creating DB $e');
+        }
       },
       onOpen: (database) => print('database opened'),
     );
@@ -31,9 +34,28 @@ class TasksDB {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getTasksFromDB() async {
+  Future<List<Map<String, dynamic>>> getAllTasksFromDB() async {
     return await openDB().then((db) => db.query('tasks')).catchError(
-        (error) => print('error when get data from db ${error.toString()}'));
+          (error) => print(
+            'error when get data from db ${error.toString()}',
+          ),
+        );
+  }
+
+  Future<List<Map<String, dynamic>>> getTasksFromDatabaseByStatus(
+    String status,
+  ) async {
+    return await openDB()
+        .then((db) => db.query(
+              'tasks',
+              where: 'status=?',
+              whereArgs: [status],
+            ))
+        .catchError(
+          (error) => print(
+            'error when get data from db ${error.toString()}',
+          ),
+        );
   }
 
   Future updateTask({required Task task}) async {
@@ -59,3 +81,9 @@ class TasksDB {
             print('error when delete item from db ${error.toString()}'));
   }
 }
+
+// database
+//     .execute(
+//     'CREATE TABLE $tasksTableName (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, date TEXT, time TEXT, status TEXT)')
+// .then((value) => print('table created'))
+// .catchError((error) => print('error on creating DB $error'));
