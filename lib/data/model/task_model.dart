@@ -4,7 +4,7 @@ class Task {
   final String title;
   final String date;
   final String time;
-  final String status;
+  String status;
 
   Task({
     this.id,
@@ -23,16 +23,14 @@ class Task {
     };
   }
 
-  static List<Task> mapToTasks(tasksMap) {
-    return List.generate(tasksMap.length, (i) {
-      return Task(
-        id: tasksMap[i]['id'],
-        title: tasksMap[i]['title'],
-        date: tasksMap[i]['date'],
-        time: tasksMap[i]['time'],
-        status: tasksMap[i]['status'],
-      );
-    });
+  factory Task.fromMap(Map<String, Object?> map) {
+    return Task(
+      id: map['id'] as int?,
+      title: map['title']! as String,
+      date: map['date']! as String,
+      time: map['time']! as String,
+      status: map['status']! as String,
+    );
   }
 
   @override

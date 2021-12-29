@@ -7,22 +7,24 @@ class TasksRepository {
   TasksRepository(this.tasksDB);
 
   Future insertTask(Task task) async {
-    return await tasksDB.insertToTasksTable(task: task);
+    return tasksDB.insertToTasksTable(task: task);
   }
 
   Future<List<Task>> getTasks() async {
-    return Task.mapToTasks(await tasksDB.getAllTasksFromDB());
+    final tasksList = await tasksDB.getAllTasksFromDB();
+    return tasksList.map((e) => Task.fromMap(e)).toList();
   }
 
   Future<List<Task>> getTasksFromDatabaseByStatus(String status) async {
-    return Task.mapToTasks(await tasksDB.getTasksFromDatabaseByStatus(status));
+    final tasksList = await tasksDB.getTasksFromDatabaseByStatus(status);
+    return tasksList.map((e) => Task.fromMap(e)).toList();
   }
 
   Future updateTask(Task task) async {
-    return await tasksDB.updateTask(task: task);
+    return tasksDB.updateTask(task: task);
   }
 
   Future deleteTask(int id) async {
-    return await tasksDB.deleteTask(id: id);
+    return tasksDB.deleteTask(id: id);
   }
 }

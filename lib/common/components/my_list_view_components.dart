@@ -1,11 +1,5 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do/business_logic/cubit/new/new_tasks_cubit.dart';
 import 'package:to_do/data/model/task_model.dart';
-
-// TODO (max):: immutable
 
 class CustomTasksListItem extends StatelessWidget {
   final Task task;
@@ -13,7 +7,7 @@ class CustomTasksListItem extends StatelessWidget {
   final VoidCallback onDoneIconPressed;
   final VoidCallback onArchivedIconPressed;
 
-  CustomTasksListItem({
+  const CustomTasksListItem({
     required this.task,
     required this.onDismissed,
     required this.onDoneIconPressed,
@@ -25,22 +19,33 @@ class CustomTasksListItem extends StatelessWidget {
     return Dismissible(
       onDismissed: onDismissed,
       key: Key(task.id.toString()),
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.white),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          boxShadow: const [
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.grey,
+              offset: Offset(5, 5),
+            ),
+          ],
+        ),
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           children: [
             CircleAvatar(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.deepPurple,
               radius: 40,
               child: Text(
                 task.time,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Expanded(
@@ -50,7 +55,7 @@ class CustomTasksListItem extends StatelessWidget {
                 children: [
                   Text(
                     task.title,
-                    style: TextStyle(fontSize: 25),
+                    style: const TextStyle(fontSize: 25),
                   ),
                   Text(
                     task.date,
@@ -59,50 +64,26 @@ class CustomTasksListItem extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              iconSize: 35,
-              onPressed: onDoneIconPressed,
-              icon: Icon(
-                Icons.check_box,
-                color: Colors.blue,
+            if (task.status != 'done')
+              IconButton(
+                iconSize: 35,
+                onPressed: onDoneIconPressed,
+                icon: const Icon(
+                  Icons.check_box_outlined,
+                  color: Colors.deepPurple,
+                ),
               ),
-            ),
-            IconButton(
-              iconSize: 35,
-              onPressed: onArchivedIconPressed,
-              icon: Icon(
-                Icons.archive,
-                color: Colors.grey[500],
+            if (task.status != 'archived')
+              IconButton(
+                iconSize: 35,
+                onPressed: onArchivedIconPressed,
+                icon: Icon(
+                  Icons.archive_outlined,
+                  color: Colors.grey[500],
+                ),
               ),
-            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class NoTasksPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.menu,
-            size: 100.0,
-            color: Colors.grey,
-          ),
-          Text(
-            'No Tasks Yet, Please Add Some Tasks',
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -112,8 +93,7 @@ class CustomListViewSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 1,
-      color: Colors.grey[400],
+      height: 20,
     );
   }
 }

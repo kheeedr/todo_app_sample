@@ -1,89 +1,100 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:to_do/common/constants.dart';
 import 'package:to_do/data/model/task_model.dart';
 
 class TasksDB {
-  Future<Database> openDB() async {
-    return await openDatabase(
-      databaseFileName,
-      version: 1,
-      onCreate: (database, version) async {
-        try {
-          await database.execute('''CREATE TABLE $tasksTableName
-               (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                title TEXT, date TEXT, time TEXT, status TEXT)
-                ''');
-          print('table created');
-        } catch (e) {
-          print('error on creating DB $e');
-        }
-      },
-      onOpen: (database) => print('database opened'),
-    );
+  static Database? _instance;
+
+  static Database get instance {
+    if (_instance == null) throw 'should call `TasksDB.init()` first  ⛔';
+    return _instance!;
   }
 
-  Future insertToTasksTable({required Task task}) async {
-    return await openDB().then(
-      (db) => db
-          .insert(tasksTableName, task.toMap())
-          .then((value) => print('$value inserted successfully'))
-          .catchError(
-            (error) =>
-                print('error when  Inserting New Record ${error.toString()}'),
-          ),
-    );
+  static Future<void> init() async {
+    try {
+      await openDatabase(
+        databaseFileName,
+        version: 1,
+        onCreate: (database, version) async {
+          try {
+            await database.execute(
+              '''
+              CREATE TABLE $tasksTableName
+              (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              title TEXT, date TEXT, time TEXT, status TEXT)
+              ''',
+            );
+            log('table created');
+          } catch (e) {
+            log('error on creating DB $e');
+          }
+        },
+        onOpen: (database) {
+          _instance = database;
+          log('database opened');
+        },
+      );
+    } catch (e, st) {
+      log(e.toString());
+      log(st.toString());
+    }
   }
 
-  Future<List<Map<String, dynamic>>> getAllTasksFromDB() async {
-    return await openDB().then((db) => db.query('tasks')).catchError(
-          (error) => print(
-            'error when get data from db ${error.toString()}',
-          ),
-        );
+  Future<void> insertToTasksTable({required Task task}) async {
+    try {
+      final taskId = await instance.insert(tasksTableName, task.toMap());
+      log('$taskId inserted successfully');
+    } catch (e) {
+      rethrow;
+    }
   }
 
-  Future<List<Map<String, dynamic>>> getTasksFromDatabaseByStatus(
+  Future<List<Map<String, Object?>>> getAllTasksFromDB() {
+    try {
+      return instance.query('tasks');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, Object?>>> getTasksFromDatabaseByStatus(
     String status,
   ) async {
-    return await openDB()
-        .then((db) => db.query(
-              'tasks',
-              where: 'status=?',
-              whereArgs: [status],
-            ))
-        .catchError(
-          (error) => print(
-            'error when get data from db ${error.toString()}',
-          ),
-        );
+    try {
+      return instance.query(
+        'tasks',
+        where: 'status=?',
+        whereArgs: [status],
+      );
+    } catch (error) {
+      rethrow;
+    }
   }
 
-  Future updateTask({required Task task}) async {
-    return await openDB()
-        .then((dp) => dp.update(
-              tasksTableName,
-              task.toMap(),
-              where: 'id = ?',
-              whereArgs: [task.id],
-            ))
-        .catchError(
-            (error) => print('error when update db ${error.toString()}'));
+  Future<void> updateTask({required Task task}) async {
+    try {
+      await instance.update(
+        tasksTableName,
+        task.toMap(),
+        where: 'id = ?',
+        whereArgs: [task.id],
+      );
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future deleteTask({required int id}) async {
-    return await openDB()
-        .then((dp) => dp.delete(
-              tasksTableName,
-              where: 'id = ?',
-              whereArgs: [id],
-            ))
-        .catchError((error) =>
-            print('error when delete item from db ${error.toString()}'));
+    try {
+      await instance.delete(
+        tasksTableName,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (error) {
+      log('error when delete item from db ${error.toString()}');
+    }
   }
 }
-
-// database
-//     .execute(
-//     'CREATE TABLE $tasksTableName (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, date TEXT, time TEXT, status TEXT)')
-// .then((value) => print('table created'))
-// .catchError((error) => print('error on creating DB $error'));

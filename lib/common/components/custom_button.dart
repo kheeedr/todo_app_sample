@@ -10,12 +10,12 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
 
-  CustomButton({
+  const CustomButton({
     this.width = double.infinity,
     this.height = 50,
     this.borderRadius = 10.0,
     this.fontSize = 20,
-    this.buttonColor = const Color(0xffff745c),
+    this.buttonColor = Colors.deepPurple,
     required this.onPressed,
     required this.text,
   });
@@ -43,32 +43,3 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
-
-// Widget customButton({
-//   double width = double.infinity,
-//   double height = 50,
-//   double borderRadius = 10.0,
-//   double fontSize = 20,
-//   Color buttonColor = const Color(0xffff745c),
-//   required onPressed,
-//   required String text,
-// }) =>
-//     Container(
-//       width: width,
-//       decoration: BoxDecoration(
-//         color: buttonColor,
-//         borderRadius:
-//             BorderRadiusDirectional.all(Radius.circular(borderRadius)),
-//       ),
-//       child: MaterialButton(
-//         onPressed: onPressed,
-//         height: height,
-//         child: Text(
-//           text,
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontSize: fontSize,
-//           ),
-//         ),
-//       ),
-//     );

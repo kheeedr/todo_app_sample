@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// TODO (max)::  immutability
 
 class CustomTextFormField extends StatelessWidget {
   final double borderRadius;
@@ -13,7 +12,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final bool readOnly;
 
-  CustomTextFormField({
+  const CustomTextFormField({
     this.controller,
     this.borderRadius = 10.0,
     this.prefixIcon,
